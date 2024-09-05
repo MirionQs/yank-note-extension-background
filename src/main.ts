@@ -52,6 +52,8 @@ const pluginRegister = async (ctx: Ctx) => {
       group: 'appearance',
       type: 'number',
       defaultValue: defaultOpacity,
+      format: 'range',
+      step: 0.01,
       minimum: 0,
       maximum: 1
     }
