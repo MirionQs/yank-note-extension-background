@@ -1,6 +1,6 @@
 {
   "name": "yank-note-extension-background",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "displayName": "自定义背景",
   "description": "现在你可以把 Yank Note 的背景设为你最喜欢的图片了！",
   "author": "Mirion",
