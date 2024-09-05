@@ -1,4 +1,4 @@
-import { registerPlugin, Ctx } from '@yank-note/runtime-api'
+import { registerPlugin, Ctx, ctx } from '@yank-note/runtime-api'
 
 const pluginName = 'extension-background'
 const settingPath = 'extension-background.image-path'
@@ -14,23 +14,46 @@ const defaultOpacity = .3
  * @param path 背景图路径
  * @param opacity 背景图不透明度，自动/2避免挡住界面
  */
-const setBackground = (style: HTMLStyleElement, path: string, opacity: number) => {
-  style.innerHTML = `
-#app::before {
-    content: "";
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    z-index: 1000000;
-    pointer-events: none;
-    background: url("${path.replaceAll('\\', '/')}") no-repeat center/cover;
-    opacity: ${opacity / 2};
-}
-`
+const setBackground = async (style: HTMLStyleElement, path: string, opacity: number) => {
+  path = path.trim()
+
+  if (!path) {
+    style.innerHTML = ''
+    return
+  }
+
+
+  let url = path
+  const isUrl = /^https?:\/\//.test(path)
+
+  if (!isUrl) {
+    if (ctx.env.isElectron) {
+      url = `file://${path.replaceAll('\\', '/')}`
+    } else {
+      // 浏览器环境下，需要将图片转为 Base64
+      url = await ctx.api.rpc(`
+        const fs = require('fs-extra')
+        const mime = require('mime')
+        const base64 = await fs.readFile(${ctx.utils.quote(path)}, 'base64')
+        const type = mime.getType(${ctx.utils.quote(path)})
+        return 'data:' + type + ';base64,' + base64
+      `)
+    }
+  }
+
+  style.innerHTML = `#app::before {
+      content: "";
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      z-index: 1000000;
+      pointer-events: none;
+      background: url("${url}") no-repeat center/cover;
+      opacity: ${opacity / 2};
+  }`
 }
 
 const pluginRegister = async (ctx: Ctx) => {
-  const fs = ctx.env.nodeRequire('fs-extra')
   const style = await ctx.theme.addStyles('')
 
   // 设置面板
@@ -40,18 +63,16 @@ const pluginRegister = async (ctx: Ctx) => {
       group: 'appearance',
       type: 'string',
       defaultValue: defaultPath,
-      validator: (_, value, path) => {
-        if (value !== '' && !(fs.pathExistsSync(value) && fs.statSync(value).isFile())) {
-          return [{ property: settingPath, path, message: '路径无效' }]
-        }
-        return []
-      }
+      openDialogOptions: { properties: ['openFile'], filters: [{ name: 'Images', extensions: ['.jpeg', '.jpg', '.png', '.webp', '.svg', '.gif'] }] }
     }
+
     schema.properties[settingOpacity] = {
       title: '背景图不透明度',
       group: 'appearance',
       type: 'number',
       defaultValue: defaultOpacity,
+      format: 'range',
+      step: 0.01,
       minimum: 0,
       maximum: 1
     }
