@@ -30,7 +30,6 @@ const setBackground = (style: HTMLStyleElement, path: string, opacity: number) =
 }
 
 const pluginRegister = async (ctx: Ctx) => {
-  const fs = ctx.env.nodeRequire('fs-extra')
   const style = await ctx.theme.addStyles('')
 
   // 设置面板
@@ -40,13 +39,9 @@ const pluginRegister = async (ctx: Ctx) => {
       group: 'appearance',
       type: 'string',
       defaultValue: defaultPath,
-      validator: (_, value, path) => {
-        if (value !== '' && !(fs.pathExistsSync(value) && fs.statSync(value).isFile())) {
-          return [{ property: settingPath, path, message: '路径无效' }]
-        }
-        return []
-      }
+      openDialogOptions: { properties: ['openFile'], filters: [{ name: 'Images', extensions: ['.jpeg', '.jpg', '.png', '.webp', '.svg', '.gif'] }] }
     }
+
     schema.properties[settingOpacity] = {
       title: '背景图不透明度',
       group: 'appearance',
