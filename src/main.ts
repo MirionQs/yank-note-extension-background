@@ -22,8 +22,7 @@ const setBackground = async (style: HTMLStyleElement, path: string, opacity: num
     }
 
     let url = path
-    const isUrl = /^https?:\/\//.test(path)
-    if (!isUrl) {
+    if (!/^https?:\/\//.test(path)) {
         if (ctx.env.isElectron) {
             url = `file://${path.replaceAll('\\', '/')}`
         }
@@ -32,7 +31,7 @@ const setBackground = async (style: HTMLStyleElement, path: string, opacity: num
             url = await ctx.api.rpc(`
 const fs = require('fs-extra')
 const mime = require('mime')
-const base64 = await fs.readFile(${ctx.utils.quote(path)}, 'base64')
+const base64 = fs.readFileSync(${ctx.utils.quote(path)}, 'base64')
 const type = mime.getType(${ctx.utils.quote(path)})
 return 'data:' + type + ';base64,' + base64
 `)
@@ -75,7 +74,7 @@ const pluginRegister = async (ctx: Ctx) => {
             type: 'number',
             defaultValue: defaultOpacity,
             format: 'range',
-            step: 0.01,
+            step: .01,
             minimum: 0,
             maximum: 1
         }
