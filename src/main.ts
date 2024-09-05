@@ -65,7 +65,7 @@ const pluginRegister = async (ctx: Ctx) => {
             defaultValue: defaultPath,
             openDialogOptions: {
                 properties: ['openFile'],
-                filters: [{ name: 'Images', extensions: ['.jpeg', '.jpg', '.png', '.webp', '.svg', '.gif'] }]
+                filters: [{ name: '图像文件', extensions: ['jpeg', 'jpg', 'png', 'webp', 'svg', 'gif'] }]
             }
         }
 
