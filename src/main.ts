@@ -1,7 +1,7 @@
 import { registerPlugin, Ctx, ctx } from '@yank-note/runtime-api'
 
 const pluginName = 'extension-background'
-const settingPath = 'extension-background.image-path'
+const settingPath = 'extension-background.path'
 const settingOpacity = 'extension-background.opacity'
 const actionToggle = 'extension-background.toggle'
 
