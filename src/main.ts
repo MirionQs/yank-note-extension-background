@@ -31,7 +31,7 @@ const setBackground = async (style: HTMLStyleElement, path: string, opacity: num
             url = await ctx.api.rpc(`
 const fs = require('fs-extra')
 const mime = require('mime')
-const base64 = fs.readFileSync(${ctx.utils.quote(path)}, 'base64')
+const base64 = await fs.readFile(${ctx.utils.quote(path)}, 'base64')
 const type = mime.getType(${ctx.utils.quote(path)})
 return 'data:' + type + ';base64,' + base64
 `)
