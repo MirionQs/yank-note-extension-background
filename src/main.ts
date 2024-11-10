@@ -85,7 +85,7 @@ const pluginRegister = async (ctx: Ctx) => {
         name: actionToggle,
         description: 'background: 切换背景图',
         forUser: true,
-        keys: ['Shift', 'Alt', 'b'],
+        keys: ['Shift', 'Alt', 'B'],
         handler: () => {
             style.disabled = !style.disabled
         }
