@@ -58,7 +58,7 @@ const pluginRegister = async (ctx: Ctx) => {
     // 设置面板
     ctx.setting.changeSchema(schema => {
         schema.properties[settingPath] = {
-            title: '背景图路径',
+            title: 'background: 背景图路径',
             group: 'appearance',
             type: 'string',
             defaultValue: defaultPath,
@@ -69,7 +69,7 @@ const pluginRegister = async (ctx: Ctx) => {
         }
 
         schema.properties[settingOpacity] = {
-            title: '背景图不透明度',
+            title: 'background: 背景图不透明度',
             group: 'appearance',
             type: 'number',
             defaultValue: defaultOpacity,
@@ -80,16 +80,15 @@ const pluginRegister = async (ctx: Ctx) => {
         }
     })
 
-    // 命令面板
-    ctx.editor.whenEditorReady().then(({ editor, monaco }) => {
-        editor.addAction({
-            id: actionToggle,
-            label: 'background: 切换背景图',
-            keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KeyB],
-            run: () => {
-                style.disabled = !style.disabled
-            }
-        })
+    // 注册快捷键
+    ctx.action.registerAction({
+        name: actionToggle,
+        description: 'background: 切换背景图',
+        forUser: true,
+        keys: ['Shift', 'Alt', 'b'],
+        handler: () => {
+            style.disabled = !style.disabled
+        }
     })
 
     // 更改设置后刷新
