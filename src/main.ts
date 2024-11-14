@@ -80,7 +80,7 @@ const pluginRegister = async (ctx: Ctx) => {
         }
     })
 
-    // 注册快捷键
+    // 添加工作台快捷键
     ctx.action.registerAction({
         name: actionToggle,
         description: 'background: 切换背景图',
